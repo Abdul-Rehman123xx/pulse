@@ -10,6 +10,22 @@ const products = [
     image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjhJEZgTu-YKFoVH2W8CpWCR1XZAU3lcDNpA&s"
   },
   {
+  id: 8,
+  title: "Ocean Safari Cheese Cheetos",
+  description: "Cheesy, crunchy, and shaped like sea creatures — this fun snack brings an ocean of flavor in every bite!",
+  price: 50,
+  category: "snacks",
+  image: "https://img.drz.lazcdn.com/static/pk/p/897da5349cdebedadf3344f57396a8d0.jpg_400x400q75.avif"
+  },
+  {
+  id: 7,
+  title: "Smile Donut",
+  description: "A soft, chocolate-glazed donut topped with rainbow sprinkles and filled with gooey marshmallow love — sweet joy in every bite!",
+  price: 70,
+  category: "desserts",
+  image: "https://img.drz.lazcdn.com/static/pk/p/704dd26a27ad13a4356dc6765df7a52f.jpg_400x400q75.avif"
+ }, 
+  {
     id: 2,
     title: "Flaming Hot Cheetos",
     description: "Spicy and crunchy flaming hot Cheetos",
@@ -18,12 +34,20 @@ const products = [
     image: "https://img.drz.lazcdn.com/static/pk/p/951dabcd67f58f547083857840a2abd7.jpg_400x400q75.avif"
   },
   {
+  id: 9,
+  title: "Lays Barbeque Wavy",
+  description: "Crunchy, smoky, and irresistibly good — these BBQ wavy chips pack bold flavor into every crisp bite!",
+  price: 60,
+  category: "snacks",
+  image: "https://img.drz.lazcdn.com/g/kf/Sd1f15e290d8743f7a96164b71cdd6fa2w.jpg_400x400q75.avif"
+  },
+  {
     id: 3,
     title: "Flaming Hot Wavy",
     description: "Wavy chips with flaming hot spice",
     price: 100,
     category: "snacks",
-    image: "https://img.drz.lazcdn.com/static/pk/p/c4d1d7cb1c5c6c8851a4f303549f35cd.jpg_400x400q75.avif"
+    image: "https://img.drz.lazcdn.com/static/pk/p/3edd83c6f7c39417973626c90fbd1ffd.jpg_400x400q75.avif"
   },
   {
     id: 4,
@@ -40,6 +64,14 @@ const products = [
     price: 200,
     category: "snacks",
     image: "https://img.drz.lazcdn.com/g/kf/S094f3cc00427491cba7ef68ddacbf1bec.jpg_400x400q75.avif"
+  },
+  {
+    id: 6,
+    title: "Zombie Snacks",
+    description: "Sour, chewy, and scarily addictive – the ultimate undead treat!",
+    price: 30,
+    category: "snacks",
+    image: "https://jojoshop.pk/cdn/shop/files/Zombiers.20comboflavorblueberry_strawberrytray.jpg?v=1694670465"
   }
 ];
 
@@ -58,7 +90,6 @@ function ProductCard({ product, onAddToCart }) {
       />
       <h3 className="text-lg font-semibold text-dark mb-1">{product.title}</h3>
       <p className="text-sm font-medium text-primary">{product.price} PKR</p>
-
       {!expanded && (
         <p className="text-sm text-gray-500 mt-1">Tap to view details</p>
       )}
@@ -108,7 +139,6 @@ export default function App() {
       localStorage.setItem("orders", JSON.stringify(orders));
     }
   }, [orders]);
-
   useEffect(() => {
     if (adminMode) {
       const interval = setInterval(() => {
@@ -150,7 +180,6 @@ export default function App() {
   const calculateTotal = () => {
     return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
-
   const handlePlaceOrder = () => {
     const dateObj = new Date();
     const day = dateObj.getDate();
@@ -188,7 +217,7 @@ export default function App() {
     : products.filter(product => product.category === selectedCategory);
 
   const categories = ["all", ...new Set(products.map(product => product.category))];
-
+  const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   if (!showMenu) {
     return (
       <div className="min-h-screen bg-gradient-to-tr from-pink-100 via-amber-100 via-blue-100 to-purple-200 flex flex-col items-center justify-center text-center text-dark p-6">
@@ -219,7 +248,7 @@ export default function App() {
               className="border px-4 py-2 rounded w-full mb-3"
               placeholder="Password"
               value={passwordInput}
-              onChange={(e) => setPasswordInput(e.target.value)}
+              onChange={(e) => setPasswordInput(e.target.value)} 
             />
             <button
               className="bg-primary text-white px-4 py-2 rounded w-full"
@@ -240,7 +269,6 @@ export default function App() {
       </div>
     );
   }
-
   if (adminMode && orders !== null) {
     return (
       <div className="min-h-screen bg-gray-50 text-dark p-6">
@@ -299,17 +327,23 @@ export default function App() {
         ))}
       </div>
 
+      {/* 💖 Floating Cart Bubble */}
       {cart.length > 0 && !showForm && (
-        <button
-          className="fixed bottom-6 right-6 bg-primary text-white px-6 py-3 rounded-full shadow-lg hover:bg-indigo-600"
-          onClick={() => setShowForm(true)}
-        >
-          View Cart ({cart.reduce((sum, item) => sum + item.quantity, 0)})
-        </button>
+        <div className="fixed top-6 right-6 z-50">
+          <button
+            className="relative bg-primary text-white px-4 py-2 rounded-full shadow-lg hover:bg-indigo-600 transition-all duration-300"
+            onClick={() => setShowForm(true)}
+          >
+            🛒
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow">
+              {totalCartItems}
+            </span>
+          </button>
+        </div>
       )}
 
       {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-6">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-6 z-50">
           <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-lg overflow-auto max-h-[90vh]">
             <h3 className="text-xl font-semibold mb-4">Your Order</h3>
             <ul className="mb-4 space-y-2 max-h-48 overflow-y-auto">
@@ -387,7 +421,8 @@ export default function App() {
         </div>
       )}
 
-      <div className="fixed top-6 right-6">
+      {/* 🔙 Back to Home */}
+      <div className="fixed top-6 left-6">
         <button
           className="text-sm text-primary underline hover:text-indigo-700"
           onClick={() => setShowMenu(false)}
